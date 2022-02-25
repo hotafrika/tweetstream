@@ -26,6 +26,7 @@ func main() {
 	logger := zlog.Level(zerolog.DebugLevel)
 
 	// consumers
+	// ws will be available on ws://host:port/ws
 	ws := consumer.NewWS(wsAddr, &logger)
 	console := consumer.Console{}
 	// source
