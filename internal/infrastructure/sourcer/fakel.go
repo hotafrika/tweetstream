@@ -3,6 +3,7 @@ package sourcer
 import (
 	"encoding/json"
 	"errors"
+	"github.com/hotafrika/tweetstream/internal/domain"
 	"github.com/hotafrika/tweetstream/internal/domain/entities"
 	"github.com/rs/zerolog"
 	"io"
@@ -18,6 +19,8 @@ type FakeL struct {
 	filename string
 	logger   *zerolog.Logger
 }
+
+var _ domain.Sourcer = FakeL{}
 
 // NewFakeL creates new FakeL
 func NewFakeL(sleep time.Duration, filename string, logger *zerolog.Logger) FakeL {

@@ -1,0 +1,20 @@
+[{
+  "text" : "tweet 1",
+  "id" : "1",
+  "author" : {
+    "id" : "11",
+    "name" : "art",
+    "username" : "hota"
+  }
+},
+  {
+    "text" : "tweet 2",
+    "id" : "2",
+    "author" : {
+      "id" : "12",
+      "name" : "art2",
+      "username" : "hota2"
+    }
+  }
+
+]
