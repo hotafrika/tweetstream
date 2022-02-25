@@ -50,7 +50,7 @@ func TestService_RunLimited(t *testing.T) {
 				assert.Equal(t, tt.wantCount, c.GetCount())
 			// if return from timer
 			case <-timer.C:
-				quit <- struct{}{}
+				close(quit)
 				assert.Fail(t, "service timeout")
 			}
 		})

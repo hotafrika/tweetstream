@@ -33,7 +33,7 @@ func NewFakeL(sleep time.Duration, filename string, logger *zerolog.Logger) Fake
 
 // Get starts FakeL to send tweets from the file
 // Returns when all the tweets are sent
-func (f FakeL) Get(quit chan struct{}) (chan entities.Tweet, error) {
+func (f FakeL) Get(quitCh chan struct{}) (chan entities.Tweet, error) {
 	file, err := os.Open(f.filename)
 	if err != nil {
 		return nil, err
@@ -63,8 +63,8 @@ func (f FakeL) Get(quit chan struct{}) (chan entities.Tweet, error) {
 		}()
 		for _, tweet := range tweets {
 			select {
-			case <-quit:
-				f.logger.Info().Str("Unit", reflect.TypeOf(f).String()).Msg("got quit signal via quit channel")
+			case <-quitCh:
+				f.logger.Info().Str("Unit", reflect.TypeOf(f).String()).Msg("got quitCh signal via quitCh channel")
 				return
 			case destCh <- tweet:
 				time.Sleep(f.sleep)
