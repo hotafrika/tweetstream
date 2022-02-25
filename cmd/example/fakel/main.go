@@ -4,16 +4,19 @@ import (
 	"github.com/hotafrika/tweetstream/internal/app"
 	"github.com/hotafrika/tweetstream/internal/infrastructure/consumer"
 	"github.com/hotafrika/tweetstream/internal/infrastructure/sourcer"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"time"
 )
 
 func main() {
-	s := sourcer.NewFake(2*time.Second, "tweets.json")
+	logger := log.Level(zerolog.DebugLevel)
+	s := sourcer.NewFakeL(2*time.Second, "tweets.json", &logger)
 	c1 := consumer.Console{}
 
-	service := app.NewService(s, c1)
+	service := app.NewService(s, &logger, c1)
 	quit := make(chan struct{})
-	err := service.Start(quit)
+	err := service.Run(quit)
 	if err != nil {
 		panic(err)
 	}

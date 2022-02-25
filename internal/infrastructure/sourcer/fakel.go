@@ -11,24 +11,26 @@ import (
 	"time"
 )
 
-// Fake is a simple Sourcer which reads tweets from file and infinitely send it
-type Fake struct {
+// FakeL is a simple Sourcer which reads tweets from file and send it
+// It stops execution when all the tweets are sent
+type FakeL struct {
 	sleep    time.Duration
 	filename string
 	logger   *zerolog.Logger
 }
 
-// NewFake creates new Fake
-func NewFake(sleep time.Duration, filename string, logger *zerolog.Logger) Fake {
-	return Fake{
+// NewFakeL creates new FakeL
+func NewFakeL(sleep time.Duration, filename string, logger *zerolog.Logger) FakeL {
+	return FakeL{
 		sleep:    sleep,
 		filename: filename,
 		logger:   logger,
 	}
 }
 
-// Get starts Fake to send tweets from the file
-func (f Fake) Get(quit chan struct{}) (chan entities.Tweet, error) {
+// Get starts FakeL to send tweets from the file
+// Returns when all the tweets are sent
+func (f FakeL) Get(quit chan struct{}) (chan entities.Tweet, error) {
 	file, err := os.Open(f.filename)
 	if err != nil {
 		return nil, err
@@ -56,15 +58,12 @@ func (f Fake) Get(quit chan struct{}) (chan entities.Tweet, error) {
 			f.logger.Info().Str("Unit", reflect.TypeOf(f).String()).Msg("close tweets source channel")
 			close(destCh)
 		}()
-		i := 0
-		for {
-			i = i % len(tweets)
+		for _, tweet := range tweets {
 			select {
 			case <-quit:
 				f.logger.Info().Str("Unit", reflect.TypeOf(f).String()).Msg("got quit signal via quit channel")
 				return
-			case destCh <- tweets[i]:
-				i++
+			case destCh <- tweet:
 				time.Sleep(f.sleep)
 			}
 		}

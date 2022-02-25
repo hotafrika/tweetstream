@@ -6,5 +6,5 @@ import "github.com/hotafrika/tweetstream/internal/domain/entities"
 // Init is a method for consumer initialization with input channel. Consumer must process new tweets almost in real time.
 // Or it must create own buffer.
 type Consumer interface {
-	Start(chan entities.Tweet)
+	Run(chan entities.Tweet)
 }
